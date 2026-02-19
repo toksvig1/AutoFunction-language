@@ -1,1 +1,6 @@
 x = 4 5 +
+y = x 1 +
+
+if x y ==
+z = x y *
+end
