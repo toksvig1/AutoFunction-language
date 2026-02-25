@@ -1,6 +1,10 @@
-x = 4 5 +
-y = x 1 +
+x = 4 5 *
+y = x 0 +
 
 if x y ==
 z = x y *
 end
+
+x = []
+
+print x

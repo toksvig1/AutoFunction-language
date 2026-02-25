@@ -7,13 +7,24 @@ class Inter:
         while pc < len(lines):
             line = lines[pc]
             match line.split(maxsplit=1)[0]:
+                case 'while':
+                    print("wh")
+                    orgline = pc
+                    while self.ev_expr(line.split(maxsplit=1)[1])==1:
+                        pc =pc+1 
+                        if lines[pc].split(maxsplit=1)[0] == "end":
+                            pc = orgline
+                    while lines[pc].split(maxsplit=1)[0] != "end": pc = pc + 1
+                    pc = pc + 1
                 case 'if':
                     if self.ev_expr(line.split(maxsplit=1)[1])==1: 
                         pc =pc+1 
-                        print("a")
                     else:
                         while lines[pc].split(maxsplit=1)[0] != "end": pc = pc + 1
                         pc = pc + 1
+                case 'print':
+                    print(self.varsNoSF[line.split(maxsplit=1)[1]])
+                    pc = pc + 1
                 case 'end': 
                     pc = pc + 1
                 case _:
@@ -43,6 +54,27 @@ class Inter:
                     if lhs in self.varsNoSF: lhs = self.varsNoSF[lhs]
                     if rhs in self.varsNoSF: rhs = self.varsNoSF[rhs]
                     if lhs == rhs:
+                        stack.append(1)
+                    else:
+                        stack.append(0)
+                elif tok == "<":
+                    if lhs in self.varsNoSF: lhs = self.varsNoSF[lhs]
+                    if rhs in self.varsNoSF: rhs = self.varsNoSF[rhs]
+                    if lhs < rhs:
+                        stack.append(1)
+                    else:
+                        stack.append(0)
+                elif tok == ">":
+                    if lhs in self.varsNoSF: lhs = self.varsNoSF[lhs]
+                    if rhs in self.varsNoSF: rhs = self.varsNoSF[rhs]
+                    if lhs > rhs:
+                        stack.append(1)
+                    else:
+                        stack.append(0)
+                elif tok == "!=":
+                    if lhs in self.varsNoSF: lhs = self.varsNoSF[lhs]
+                    if rhs in self.varsNoSF: rhs = self.varsNoSF[rhs]
+                    if lhs != rhs:
                         stack.append(1)
                     else:
                         stack.append(0)
