@@ -1,9 +1,6 @@
 import sys
-class Inter:
-    def ev(self, s):
-        self.varsNoSF = {}
-        lines = [x for x in s.split("\n") if x.strip() != ""]
-        pc = 0
+
+"""
         while pc < len(lines):
             line = lines[pc]
             match line.split(maxsplit=1)[0]:
@@ -19,8 +16,20 @@ class Inter:
                 case _:
                     (name,_,expr) = line.split(maxsplit=2)
                     self.varsNoSF[name] = self.ev_expr(expr)
-                    #print(name+" | "+expr)
                     pc = pc + 1
+        """
+
+
+
+
+
+
+class Inter:
+    def ev(self, s):
+        self.varsNoSF = {}
+        lines = [x for x in s.split("\n") if x.strip() != ""]
+        pc = 0
+        self.recurvline_func(lines,pc)
         print(self.varsNoSF)
     def ev_expr(self, s):
         toks = s.split()
@@ -29,22 +38,53 @@ class Inter:
         #print(toks)
         for tok in toks:
             #print(tok)
-            if tok.isdigit(): stack.append(int(tok))
-            elif tok in self.varsNoSF: stack.append(self.varsNoSF[tok])
+            #stack = stack.copy() stack.append(int(tok)) stack.append(self.varsNoSF[tok])
+            if tok.isdigit(): stack = stack + [int(tok)]
+            elif tok in self.varsNoSF: stack = stack + [self.varsNoSF[tok]]
             else:
                 rhs = stack.pop()
                 lhs = stack.pop()
                 #print(lhs)
                 #print(rhs)
-                if tok == "+": stack.append(lhs + rhs)
-                elif tok == "-": stack.append(lhs-rhs)
-                elif tok == "*": stack.append(lhs*rhs)
+                if tok == "+": stack = stack + [lhs + rhs]
+                elif tok == "-": stack = stack + [lhs-rhs]
+                elif tok == "*": stack = stack + [lhs*rhs]
                 elif tok == "==": 
                     if lhs in self.varsNoSF: lhs = self.varsNoSF[lhs]
                     if rhs in self.varsNoSF: rhs = self.varsNoSF[rhs]
                     if lhs == rhs:
-                        stack.append(1)
+                        stack = stack + [1]
                     else:
-                        stack.append(0)
+                        stack = stack + [0]
         return stack[0]
+    
+    def recurvline_func(self,lines,pc):
+        line = lines[pc]
+        match line.split(maxsplit=1)[0]:
+            case 'if':
+                if self.ev_expr(line.split(maxsplit=1)[1])==1: 
+                    pc =pc+1 
+                    print("a")
+                else:
+                    while lines[pc].split(maxsplit=1)[0] != "end": pc = pc + 1
+                    pc = pc + 1
+            case 'end': 
+                pc = pc + 1
+            case 'while':
+                print("a")
+                self.recurv_func(lines,pc)
+            case _:
+                (name,_,expr) = line.split(maxsplit=2)
+                self.varsNoSF[name] = self.ev_expr(expr)
+                #print(name+" | "+expr)
+                pc = pc + 1
+        if pc < len(lines):
+            self.recurvline_func(lines,pc)
+
+
+    def recurv_func(self, lines, pc):
+        print("run")
+        if pc == 2:
+            self.recurv_func(lines,pc)
+    
 Inter().ev(open(sys.argv[1]).read())
