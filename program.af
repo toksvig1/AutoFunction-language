@@ -5,3 +5,8 @@ if x y ==
 z = x y *
 end
 x = 0
+
+while x 5 <
+x = x + 1
+print x
+end
